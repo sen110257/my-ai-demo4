@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网页轮播图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .carousel {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            position: relative;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .slide-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            padding: 40px 30px 30px;
+        }
+
+        .slide-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .slide-description {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 15px;
+            pointer-events: none;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: #333;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-btn:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .indicator:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .indicator.active {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.3);
+            transform: scale(1.2);
+        }
+
+        .carousel-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.1s linear;
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            .slide img {
+                height: 300px;
+            }
+
+            .slide-title {
+                font-size: 1.5rem;
+            }
+
+            .slide-description {
+                font-size: 0.9rem;
+            }
+
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .indicator {
+                width: 10px;
+                height: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="carousel-container">
+        <div class="carousel-progress" id="progress"></div>
+        
+        <div class="carousel" id="carousel">
+            <div class="slide">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beautiful%20mountain%20landscape%20with%20snow%20peaks%20at%20sunrise&image_size=landscape_16_9" alt="雪山日出">
+                <div class="slide-content">
+                    <h2 class="slide-title">壮丽雪山</h2>
+                    <p class="slide-description">欣赏大自然最壮观的美景，感受雪山的雄伟与宁静。日出时分，金色阳光洒在雪峰之上，美不胜收。</p>
+                </div>
+            </div>
+            
+            <div class="slide">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tropical%20beach%20paradise%20with%20palm%20trees%20and%20turquoise%20water&image_size=landscape_16_9" alt="热带海滩">
+                <div class="slide-content">
+                    <h2 class="slide-title">热带天堂</h2>
+                    <p class="slide-description">漫步在细软的沙滩上，聆听海浪的声音。碧蓝的海水与蔚蓝的天空相映成趣，是度假的完美去处。</p>
+                </div>
+            </div>
+            
+            <div class="slide">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20japanese%20temple%20in%20autumn%20with%20red%20leaves&image_size=landscape_16_9" alt="日本古寺">
+                <div class="slide-content">
+                    <h2 class="slide-title">禅意古寺</h2>
+                    <p class="slide-description">穿越千年时光，感受古老文化的魅力。红叶纷飞的季节，古寺更添一份宁静与祥和。</p>
+                </div>
+            </div>
+            
+            <div class="slide">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20city%20skyline%20at%20night%20with%20colorful%20lights&image_size=landscape_16_9" alt="城市夜景">
+                <div class="slide-content">
+                    <h2 class="slide-title">都市夜景</h2>
+                    <p class="slide-description">霓虹闪烁的城市夜空，展现现代都市的繁华与活力。高楼大厦灯火通明，构成一幅璀璨的画卷。</p>
+                </div>
+            </div>
+            
+            <div class="slide">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=peaceful%20forest%20path%20with%20sunlight%20through%20trees&image_size=landscape_16_9" alt="森林小径">
+                <div class="slide-content">
+                    <h2 class="slide-title">静谧森林</h2>
+                    <p class="slide-description">远离喧嚣，走进大自然的怀抱。阳光透过树叶洒下斑驳的光影，让心灵在此刻得到真正的放松。</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="carousel-controls">
+            <button class="control-btn" id="prevBtn">&#10094;</button>
+            <button class="control-btn" id="nextBtn">&#10095;</button>
+        </div>
+        
+        <div class="carousel-indicators" id="indicators">
+            <!-- 指示器将由JavaScript动态生成 -->
+        </div>
+    </div>
+
+    <script>
+        class Carousel {
+            constructor() {
+                this.carousel = document.getElementById('carousel');
+                this.slides = this.carousel.querySelectorAll('.slide');
+                this.indicatorsContainer = document.getElementById('indicators');
+                this.prevBtn = document.getElementById('prevBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.progressBar = document.getElementById('progress');
+                
+                this.currentIndex = 0;
+                this.totalSlides = this.slides.length;
+                this.autoPlayInterval = 5000;
+                this.autoPlayTimer = null;
+                this.progressTimer = null;
+                this.progressStartTime = null;
+                
+                this.init();
+            }
+            
+            init() {
+                this.createIndicators();
+                this.bindEvents();
+                this.startAutoPlay();
+                this.updateCarousel();
+            }
+            
+            createIndicators() {
+                this.indicatorsContainer.innerHTML = '';
+                for (let i = 0; i < this.totalSlides; i++) {
+                    const indicator = document.createElement('div');
+                    indicator.className = 'indicator' + (i === 0 ? ' active' : '');
+                    indicator.addEventListener('click', () => this.goToSlide(i));
+                    this.indicatorsContainer.appendChild(indicator);
+                }
+            }
+            
+            bindEvents() {
+                this.prevBtn.addEventListener('click', () => this.prevSlide());
+                this.nextBtn.addEventListener('click', () => this.nextSlide());
+                
+                this.carousel.addEventListener('mouseenter', () => this.pauseAutoPlay());
+                this.carousel.addEventListener('mouseleave', () => this.resumeAutoPlay());
+                
+                this.prevBtn.addEventListener('mouseenter', () => this.pauseAutoPlay());
+                this.nextBtn.addEventListener('mouseenter', () => this.pauseAutoPlay());
+                this.prevBtn.addEventListener('mouseleave', () => this.resumeAutoPlay());
+                this.nextBtn.addEventListener('mouseleave', () => this.resumeAutoPlay());
+                
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') this.prevSlide();
+                    if (e.key === 'ArrowRight') this.nextSlide();
+                });
+                
+                let touchStartX = 0;
+                let touchEndX = 0;
+                
+                this.carousel.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                    this.pauseAutoPlay();
+                }, { passive: true });
+                
+                this.carousel.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    this.handleSwipe(touchStartX, touchEndX);
+                    this.resumeAutoPlay();
+                }, { passive: true });
+            }
+            
+            handleSwipe(startX, endX) {
+                const threshold = 50;
+                const diff = startX - endX;
+                
+                if (Math.abs(diff) > threshold) {
+                    if (diff > 0) {
+                        this.nextSlide();
+                    } else {
+                        this.prevSlide();
+                    }
+                }
+            }
+            
+            updateCarousel() {
+                this.carousel.style.transform = `translateX(-${this.currentIndex * 100}%)`;
+                
+                const indicators = this.indicatorsContainer.querySelectorAll('.indicator');
+                indicators.forEach((indicator, index) => {
+                    indicator.classList.toggle('active', index === this.currentIndex);
+                });
+                
+                this.resetProgress();
+            }
+            
+            goToSlide(index) {
+                this.currentIndex = index;
+                if (this.currentIndex >= this.totalSlides) this.currentIndex = 0;
+                if (this.currentIndex < 0) this.currentIndex = this.totalSlides - 1;
+                this.updateCarousel();
+            }
+            
+            nextSlide() {
+                this.goToSlide(this.currentIndex + 1);
+            }
+            
+            prevSlide() {
+                this.goToSlide(this.currentIndex - 1);
+            }
+            
+            resetProgress() {
+                if (this.progressTimer) {
+                    cancelAnimationFrame(this.progressTimer);
+                }
+                this.progressBar.style.width = '0%';
+                this.progressStartTime = null;
+                this.animateProgress();
+            }
+            
+            animateProgress() {
+                const animate = (timestamp) => {
+                    if (!this.progressStartTime) {
+                        this.progressStartTime = timestamp;
+                    }
+                    
+                    const elapsed = timestamp - this.progressStartTime;
+                    const progress = Math.min(elapsed / this.autoPlayInterval * 100, 100);
+                    
+                    this.progressBar.style.width = `${progress}%`;
+                    
+                    if (progress < 100) {
+                        this.progressTimer = requestAnimationFrame(animate);
+                    }
+                };
+                
+                this.progressTimer = requestAnimationFrame(animate);
+            }
+            
+            startAutoPlay() {
+                if (this.autoPlayTimer) {
+                    clearInterval(this.autoPlayTimer);
+                }
+                
+                this.autoPlayTimer = setInterval(() => {
+                    this.nextSlide();
+                }, this.autoPlayInterval);
+                
+                this.resetProgress();
+            }
+            
+            pauseAutoPlay() {
+                if (this.autoPlayTimer) {
+                    clearInterval(this.autoPlayTimer);
+                    this.autoPlayTimer = null;
+                }
+                if (this.progressTimer) {
+                    cancelAnimationFrame(this.progressTimer);
+                    this.progressTimer = null;
+                }
+            }
+            
+            resumeAutoPlay() {
+                if (!this.autoPlayTimer) {
+                    this.startAutoPlay();
+                }
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            new Carousel();
+        });
+    </script>
+</body>
+</html>
